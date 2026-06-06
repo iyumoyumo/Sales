@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 export default function EmployeeForm() {
@@ -12,11 +13,18 @@ export default function EmployeeForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    alert("登録データ: " + JSON.stringify(form));
+    //alert("登録データ: " + JSON.stringify(form));
+    try{
+  const res = await axios.post("http://localhost:8000/api/employees", form);
+      alert("登録成功: " + JSON.stringify(res.data));
+    } catch (error) {
+      console.error(error);
+      alert("登録エラー");
+    }
   };
-
+  
   return (
     <div className="bg-white p-6 rounded shadow w-full max-w-lg">
       <h2 className="text-2xl font-bold mb-4">社員登録</h2>

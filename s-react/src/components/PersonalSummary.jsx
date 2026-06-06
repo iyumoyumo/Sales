@@ -3,14 +3,14 @@ import { useState } from "react";
 export default function PersonalSummary() {
   const sales = [
     { id: 1, employee: "山田太郎", date: "2024-06-01", amount: 50000 },
-    { id: 2, employee: "山田太郎", date: "2024-06-10", amount: 60000 },
-    { id: 6, employee: "山田太郎", date: "2024-06-01", amount: 3000 },
-    { id: 7, employee: "山田太郎", date: "2024-06-10", amount: 20000 },
-    { id: 8, employee: "山田太郎", date: "2024-06-01", amount: 1000 },
-    { id: 9, employee: "山田太郎", date: "2024-06-10", amount: 100000 },
-    { id: 3, employee: "佐藤花子", date: "2024-06-02", amount: 30000 },
-    { id: 4, employee: "鈴木一郎", date: "2024-06-03", amount: 45000 },
-    { id: 5, employee: "佐藤花子", date: "2024-07-01", amount: 70000 },
+    { id: 2, employee: "山田太郎", date: "2025-02-10", amount: 60000 },
+    { id: 6, employee: "山田太郎", date: "2024-07-01", amount: 3000 },
+    { id: 7, employee: "山田太郎", date: "2024-08-10", amount: 20000 },
+    { id: 8, employee: "山田太郎", date: "2024-09-01", amount: 1000 },
+    { id: 9, employee: "山田太郎", date: "2024-10-10", amount: 100000 },
+    { id: 3, employee: "佐藤花子", date: "2024-11-02", amount: 30000 },
+    { id: 4, employee: "鈴木一郎", date: "2024-12-03", amount: 45000 },
+    { id: 5, employee: "佐藤花子", date: "2025-01-01", amount: 70000 },
   ];
 
   const employees = ["山田太郎", "佐藤花子", "鈴木一郎"];
@@ -25,17 +25,20 @@ export default function PersonalSummary() {
   };
 
   const getWeek = (d) => {
-    const date = new Date(d);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
+  const date = new Date(d);
 
-    const firstDay = new Date(year, month - 1, 1);
-    const firstWeekDay = firstDay.getDay();
-    const day = date.getDate();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
 
-    const weekNumber = Math.ceil((day + firstWeekDay) / 7);
-    return `${year}年${month}月 第${weekNumber}週`;
-  };
+  const firstDay = new Date(year, month - 1, 1);
+  const firstWeekDay = firstDay.getDay();
+  const day = date.getDate();
+
+  const weekNumber = Math.ceil((day + firstWeekDay) / 7);
+
+  return `${year}年${month}月 第${weekNumber}週`;
+};
+
 
   const filtered = sales.filter((s) => s.employee === selected);
 

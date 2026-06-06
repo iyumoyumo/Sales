@@ -1,10 +1,15 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 export default function EmployeeList() {
-  // ダミーデータ（後で Laravel API に置き換える）
-  const employees = [
-    { id: 1, name: "山田太郎", email: "taro@example.com", department: "営業" },
-    { id: 2, name: "佐藤花子", email: "hanako@example.com", department: "総務" },
-    { id: 3, name: "鈴木一郎", email: "ichiro@example.com", department: "開発" },
-  ];
+  const [employees, setEmployees] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/employees")
+      .then((res) => setEmployees(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <div className="bg-white p-6 rounded shadow w-full">
@@ -13,7 +18,7 @@ export default function EmployeeList() {
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">
-            <th className="border p-2">ID</th>
+            <th className="border p-2">社員ID</th>
             <th className="border p-2">名前</th>
             <th className="border p-2">メール</th>
             <th className="border p-2">部署</th>
@@ -23,7 +28,7 @@ export default function EmployeeList() {
         <tbody>
           {employees.map((emp) => (
             <tr key={emp.id} className="hover:bg-gray-100">
-              <td className="border p-2">{emp.id}</td>
+              <td className="border p-2">{emp.employee_id}</td>
               <td className="border p-2">{emp.name}</td>
               <td className="border p-2">{emp.email}</td>
               <td className="border p-2">{emp.department}</td>
