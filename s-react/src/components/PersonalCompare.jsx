@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,21 +13,21 @@ import {
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 export default function PersonalCompare() {
-  const sales = [
-     { id: 1, employee: "山田太郎", date: "2024-06-01", amount: 50000 },
-    { id: 2, employee: "山田太郎", date: "2025-02-10", amount: 60000 },
-    { id: 6, employee: "山田太郎", date: "2024-07-01", amount: 3000 },
-    { id: 7, employee: "山田太郎", date: "2024-08-10", amount: 20000 },
-    { id: 8, employee: "山田太郎", date: "2024-09-01", amount: 1000 },
-    { id: 9, employee: "山田太郎", date: "2024-10-10", amount: 100000 },
-    { id: 3, employee: "佐藤花子", date: "2024-11-02", amount: 30000 },
-    { id: 4, employee: "鈴木一郎", date: "2024-12-03", amount: 45000 },
-    { id: 5, employee: "佐藤花子", date: "2025-01-01", amount: 70000 },
-  ];
-
-  const employees = ["山田太郎", "佐藤花子", "鈴木一郎"];
+  const [sales, setSales] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [selected, setSelected] = useState("");
   const [mode, setMode] = useState("month");
+
+  // 🔥 DB から sales と employees を取得
+  useEffect(() => {
+    fetch("http://localhost:8000/api/sales")
+      .then((res) => res.json())
+      .then((data) => setSales(data));
+
+    fetch("http://localhost:8000/api/employees")
+      .then((res) => res.json())
+      .then((data) => setEmployees(data));
+  }, []);
 
   const getYear = (d) => d.split("-")[0];
 
@@ -49,8 +49,10 @@ export default function PersonalCompare() {
     return `${year}年${month}月 第${weekNumber}週`;
   };
 
+  // 🔥 選択された社員の売上だけ抽出
   const filtered = sales.filter((s) => s.employee === selected);
 
+  // 🔥 週・月・年で集計
   const grouped = {};
   filtered.forEach((s) => {
     const key =
@@ -84,6 +86,7 @@ export default function PersonalCompare() {
     <div className="bg-white p-6 rounded shadow w-full">
       <h2 className="text-2xl font-bold mb-4">売上比較（個人別）</h2>
 
+      {/* 🔥 DB から取得した社員一覧 */}
       <select
         className="border p-2 mb-4"
         value={selected}
@@ -91,7 +94,9 @@ export default function PersonalCompare() {
       >
         <option value="">社員を選択</option>
         {employees.map((e) => (
-          <option key={e} value={e}>{e}</option>
+          <option key={e.id} value={e.name}>
+            {e.name}
+          </option>
         ))}
       </select>
 

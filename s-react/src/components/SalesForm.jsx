@@ -1,36 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function SalesForm() {
-  // ダミー社員データ（後で Laravel API に置き換える）
-  const employees = [
-    { id: 1, name: "山田太郎" },
-    { id: 2, name: "佐藤花子" },
-    { id: 3, name: "鈴木一郎" },
-  ];
-
+export default function SalesForm({ setScreen }) {
+  const [employees, setEmployees] = useState([]);
   const [form, setForm] = useState({
     employee_id: "",
-    date: "",
+    sale_date: "",
     amount: "",
     memo: "",
   });
+
+  // 社員一覧を取得
+  useEffect(() => {
+    fetch("http://localhost:8000/api/employees")
+      .then(res => res.json())
+      .then(data => setEmployees(data));
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("売上登録データ: " + JSON.stringify(form));
+
+    await fetch("http://localhost:8000/api/sales", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    setScreen("salesList"); // ← Router なしで画面遷移
   };
 
   return (
-    <div className="bg-white p-6 rounded shadow w-full max-w-lg">
+    <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">売上登録</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
-        {/* 社員選択 */}
+        {/* ★ 社員選択 */}
         <div>
           <label className="block font-semibold mb-1">社員</label>
           <select
@@ -41,7 +49,7 @@ export default function SalesForm() {
             required
           >
             <option value="">選択してください</option>
-            {employees.map((emp) => (
+            {employees.map(emp => (
               <option key={emp.id} value={emp.id}>
                 {emp.name}
               </option>
@@ -54,9 +62,9 @@ export default function SalesForm() {
           <label className="block font-semibold mb-1">日付</label>
           <input
             type="date"
-            name="date"
+            name="sale_date"
             className="w-full border p-2 rounded"
-            value={form.date}
+            value={form.sale_date}
             onChange={handleChange}
             required
           />
@@ -77,7 +85,7 @@ export default function SalesForm() {
 
         {/* メモ */}
         <div>
-          <label className="block font-semibold mb-1">メモ（任意）</label>
+          <label className="block font-semibold mb-1">メモ</label>
           <textarea
             name="memo"
             className="w-full border p-2 rounded"
@@ -89,7 +97,7 @@ export default function SalesForm() {
 
         <button
           type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="bg-green-600 text-white px-4 py-2 rounded"
         >
           登録
         </button>

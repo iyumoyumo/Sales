@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,19 +13,16 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function SalesCompare() {
-  const sales = [
-    { id: 1, employee: "山田太郎", date: "2024-06-01", amount: 50000 },
-    { id: 2, employee: "山田太郎", date: "2025-02-10", amount: 60000 },
-    { id: 6, employee: "山田太郎", date: "2024-07-01", amount: 3000 },
-    { id: 7, employee: "山田太郎", date: "2024-08-10", amount: 20000 },
-    { id: 8, employee: "山田太郎", date: "2024-09-01", amount: 1000 },
-    { id: 9, employee: "山田太郎", date: "2024-10-10", amount: 100000 },
-    { id: 3, employee: "佐藤花子", date: "2024-11-02", amount: 30000 },
-    { id: 4, employee: "鈴木一郎", date: "2024-12-03", amount: 45000 },
-    { id: 5, employee: "佐藤花子", date: "2025-01-01", amount: 70000 },
-  ];
-
+  const [sales, setSales] = useState([]);
   const [mode, setMode] = useState("month"); // week | month | year
+
+  // ★ DB から売上データを取得
+  useEffect(() => {
+    fetch("http://localhost:8000/api/sales")
+      .then((res) => res.json())
+      .then((data) => setSales(data))
+      .catch((err) => console.error("APIエラー:", err));
+  }, []);
 
   const getYear = (d) => d.split("-")[0];
 
@@ -34,7 +31,6 @@ export default function SalesCompare() {
     return `${date.getFullYear()}年${date.getMonth() + 1}月`;
   };
 
-  // ★ 月内の第◯週（あなた仕様）
   const getWeek = (d) => {
     const date = new Date(d);
     const year = date.getFullYear();
@@ -49,15 +45,15 @@ export default function SalesCompare() {
     return `${year}年${month}月 第${weekNumber}週`;
   };
 
-  // 集計
+  // ★ 集計処理
   const grouped = {};
   sales.forEach((s) => {
     const key =
       mode === "week"
-        ? getWeek(s.date)
+        ? getWeek(s.sale_date)
         : mode === "month"
-        ? getMonth(s.date)
-        : getYear(s.date);
+        ? getMonth(s.sale_date)
+        : getYear(s.sale_date);
 
     if (!grouped[key]) grouped[key] = 0;
     grouped[key] += s.amount;
@@ -129,7 +125,7 @@ export default function SalesCompare() {
         </tbody>
       </table>
 
-      {/* ★ 下部に縦棒グラフ */}
+      {/* グラフ */}
       <div className="h-80">
         <Bar data={chartData} />
       </div>
