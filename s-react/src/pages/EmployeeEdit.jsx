@@ -45,6 +45,18 @@ export default function EmployeeEdit() {
     <div className="p-4 bg-white rounded shadow w-full">
       <h2 className="text-xl font-bold mb-4">社員編集</h2>
 
+{/* 社員ID */}
+<div className="mb-4">
+  <label className="block mb-1">社員ID</label>
+  <input
+    className="border p-2 rounded w-full"
+    value={employee.employeeId}
+    onChange={(e) =>
+      setEmployee({ ...employee, employeeId: e.target.value })
+    }
+  />
+</div>
+
       {/* 名前 */}
       <div className="mb-4">
         <label className="block mb-1">名前</label>

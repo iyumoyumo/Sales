@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: 'Meiryo', sans-serif;
+  font-size: 13px;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -113,4 +118,8 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+h2 {
+  font-size: 18px !important;
 }

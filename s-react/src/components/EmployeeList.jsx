@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function EmployeeList() {
   const [employees, setEmployees] = useState([]);
@@ -20,8 +20,10 @@ export default function EmployeeList() {
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">
-            <th className="border p-2">ID</th>
+            <th className="border p-2">社員番号</th>
             <th className="border p-2">名前</th>
+            <th className="border p-2">メール</th>
+            <th className="border p-2">部署</th>
             <th className="border p-2">操作</th>
           </tr>
         </thead>
@@ -29,19 +31,19 @@ export default function EmployeeList() {
         <tbody>
           {employees.map((emp) => (
             <tr key={emp.id} className="hover:bg-gray-100">
-              <td className="border p-2">{emp.id}</td>
+              <td className="border p-2">{emp.employee_id}</td>
               <td className="border p-2">{emp.name}</td>
+              <td className="border p-2">{emp.email}</td>
+              <td className="border p-2">{emp.department}</td>
 
               <td className="border p-2 space-x-2">
-                {/* 編集ボタン → 編集画面へ遷移 */}
                 <button
-                  className="px-3 py-1 bg-green-500 text-white rounded"
+                  className="px-3 py-1 bg-blue-500 text-white rounded"
                   onClick={() => navigate(`/employees/${emp.id}/edit`)}
                 >
                   編集
                 </button>
 
-                {/* 削除ボタン → 削除確認画面へ遷移 */}
                 <button
                   className="px-3 py-1 bg-red-500 text-white rounded"
                   onClick={() => navigate(`/employees/${emp.id}/delete`)}
